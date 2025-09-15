@@ -1,0 +1,7 @@
+[project]
+name = "fastapi-microshop"
+version = "0.1.0"
+description = "FastAPI Microshop"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
