@@ -3,11 +3,14 @@ from fastapi import (
     Request,
 )
 
-from items_views import router as items_router
 from users.views import router as users_router
+from app_lifespan import lifespan
+
+from items_views import router as items_router
 
 app = FastAPI(
     title="FastAPI-Micro-shop",
+    lifespan=lifespan,
 )
 
 

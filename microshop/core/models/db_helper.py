@@ -21,7 +21,7 @@ class DatabaseHelper:
         )
 
 
-bd_helper = DatabaseHelper(
+db_helper = DatabaseHelper(
     url=settings.db_url,
     echo=settings.db_echo,
 )
