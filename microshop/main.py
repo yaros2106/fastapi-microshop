@@ -22,16 +22,5 @@ def read_root(request: Request) -> dict[str, str]:
     }
 
 
-@app.get("/hello/")
-def hello(name: str = "World") -> dict[str, str]:
-    name = name.strip().title()
-    return {"message": f"Hello {name}!"}
-
-
-@app.get("/calc/add")
-def add(a: int, b: int) -> dict[str, int]:
-    return {"result": a + b}
-
-
 app.include_router(items_router)
 app.include_router(users_router)
