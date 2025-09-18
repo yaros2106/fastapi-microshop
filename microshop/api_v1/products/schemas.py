@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Annotated
 from annotated_types import MinLen, MaxLen
 
@@ -13,9 +13,10 @@ class ProductBase(BaseModel):
     price: int
 
 
-class Product(ProductBase):
+class ProductSchema(ProductBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int
 
 
-class ProductCreate(ProductBase):
+class ProductCreateSchema(ProductBase):
     pass

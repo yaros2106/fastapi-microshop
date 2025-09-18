@@ -4,6 +4,7 @@ from fastapi import (
 )
 
 from api_v1.users.views import router as users_router
+from api_v1 import router as api_v1_router
 from app_lifespan import lifespan
 
 from items_views import router as items_router
@@ -25,5 +26,5 @@ def read_root(request: Request) -> dict[str, str]:
     }
 
 
+app.include_router(api_v1_router)
 app.include_router(items_router)
-app.include_router(users_router)
