@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from users.schemas import CreateUser
-from users.crud import create_user
+from api_v1.users.schemas import CreateUser
+from api_v1.users.crud import create_user
 
 router = APIRouter(
     tags=["Users"],

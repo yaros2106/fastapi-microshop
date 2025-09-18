@@ -1,4 +1,4 @@
-from users.schemas import CreateUser
+from api_v1.users.schemas import CreateUser
 
 
 def create_user(user_in: CreateUser) -> dict[str, bool | CreateUser]:
