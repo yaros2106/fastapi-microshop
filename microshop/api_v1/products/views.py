@@ -12,6 +12,7 @@ from api_v1.products.schemas import (
     ProductSchema,
     ProductCreateSchema,
 )
+from api_v1.products.dependencies import prefetch_product
 from core.models import ProductModel
 
 router = APIRouter(
@@ -34,7 +35,7 @@ async def get_products_view(
     "/",
     response_model=ProductSchema,
 )
-async def create_product(
+async def create_product_view(
     product: ProductCreateSchema,
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> ProductModel:
@@ -46,8 +47,7 @@ async def create_product(
     response_model=ProductSchema,
 )
 async def get_product_view(
-    product_id: int,
-    session: AsyncSession = Depends(db_helper.session_dependency),
+    product: ProductModel = Depends(prefetch_product),
 ) -> ProductModel:
     product = await crud.get_product_by_id(
         session=session,
