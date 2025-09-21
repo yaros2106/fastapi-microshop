@@ -36,7 +36,7 @@ async def create_product(
 
 async def update_product(
     product: ProductModel,
-    product_update: ProductUpdateSchema,
+    product_update: ProductUpdateSchema | ProductUpdatePartialSchema,
     session: AsyncSession,
     partial: bool = False,
 ) -> ProductModel:
