@@ -3,12 +3,15 @@ from typing import Annotated
 from annotated_types import MinLen, MaxLen
 
 
+NameString = Annotated[
+    str,
+    MinLen(3),
+    MaxLen(25),
+]
+
+
 class ProductBase(BaseModel):
-    name: Annotated[
-        str,
-        MinLen(3),
-        MaxLen(25),
-    ]
+    name: NameString
     description: str
     price: int
 
@@ -27,13 +30,6 @@ class ProductUpdateSchema(ProductCreateSchema):
 
 
 class ProductUpdatePartialSchema(BaseModel):
-    name: (
-        Annotated[
-            str,
-            MinLen(3),
-            MaxLen(25),
-        ]
-        | None
-    ) = None
+    name: NameString | None = None
     description: str | None = None
     price: int | None = None
