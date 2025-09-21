@@ -16,7 +16,7 @@ from core.models import (
 
 
 async def prefetch_product(
-    product_id: Annotated[int, Path],
+    product_id: Annotated[int, Path(description="Product ID")],
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> ProductModel:
     product = await crud.get_product_by_id(

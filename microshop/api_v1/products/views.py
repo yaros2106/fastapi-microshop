@@ -4,6 +4,8 @@ from fastapi import (
     status,
     Depends,
 )
+from watchfiles import awatch
+
 from core.models import db_helper
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,6 +13,7 @@ from api_v1.products import crud
 from api_v1.products.schemas import (
     ProductSchema,
     ProductCreateSchema,
+    ProductUpdateSchema,
 )
 from api_v1.products.dependencies import prefetch_product
 from core.models import ProductModel
@@ -49,13 +52,20 @@ async def create_product_view(
 async def get_product_view(
     product: ProductModel = Depends(prefetch_product),
 ) -> ProductModel:
-    product = await crud.get_product_by_id(
+    return product
+
+
+@router.put(
+    "/{product_id}",
+    response_model=ProductSchema,
+)
+async def update_product_view(
+    product_update: ProductUpdateSchema,
+    product: ProductModel = Depends(prefetch_product),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    return await crud.update_product(
+        product=product,
+        product_update=product_update,
         session=session,
-        product_id=product_id,
-    )
-    if product:
-        return product
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Product with id:{product_id} not found",
     )

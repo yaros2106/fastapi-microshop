@@ -20,3 +20,20 @@ class ProductSchema(ProductBase):
 
 class ProductCreateSchema(ProductBase):
     pass
+
+
+class ProductUpdateSchema(ProductCreateSchema):
+    pass
+
+
+class ProductUpdatePartialSchema(BaseModel):
+    name: (
+        Annotated[
+            str,
+            MinLen(3),
+            MaxLen(25),
+        ]
+        | None
+    ) = None
+    description: str | None = None
+    price: int | None = None
