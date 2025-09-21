@@ -2,12 +2,12 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.products.schemas import (
+from schemas.product_schema import (
     ProductCreateSchema,
     ProductUpdateSchema,
     ProductUpdatePartialSchema,
 )
-from core.models import ProductModel
+from models import ProductModel
 
 
 async def get_products(session: AsyncSession) -> list[ProductModel]:

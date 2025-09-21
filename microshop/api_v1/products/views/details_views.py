@@ -3,12 +3,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.products import crud
 from api_v1.products.dependencies import prefetch_product
-from api_v1.products.schemas import (
+from schemas.product_schema import (
     ProductSchema,
     ProductUpdateSchema,
     ProductUpdatePartialSchema,
 )
-from core.models import ProductModel, db_helper
+from models import ProductModel, db_helper
 
 
 router = APIRouter(

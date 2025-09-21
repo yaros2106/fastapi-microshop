@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api_v1.users.schemas import CreateUser
+from schemas.user_schema import CreateUser
 from api_v1.users.crud import create_user
 
 router = APIRouter(

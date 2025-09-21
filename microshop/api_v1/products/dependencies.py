@@ -9,7 +9,7 @@ from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.products import crud
-from core.models import (
+from models import (
     db_helper,
     ProductModel,
 )

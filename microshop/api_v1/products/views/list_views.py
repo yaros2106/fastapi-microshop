@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from api_v1.products import crud
-from api_v1.products.schemas import ProductSchema, ProductCreateSchema
-from core.models import db_helper, ProductModel
+from schemas.product_schema import ProductSchema, ProductCreateSchema
+from models import db_helper, ProductModel
 
 
 from fastapi import (
