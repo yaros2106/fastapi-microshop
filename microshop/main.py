@@ -3,7 +3,6 @@ from fastapi import (
     Request,
 )
 
-from api_v1.users.views import router as users_router
 from api_v1 import router as api_v1_router
 from app_lifespan import lifespan
 
