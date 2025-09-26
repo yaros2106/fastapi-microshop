@@ -159,44 +159,53 @@ async def get_profiles_with_users_and_user_with_posts(session: AsyncSession):
             print("-", post)
 
 
+async def main_relations(session: AsyncSession):
+    # await create_user(session=session, username="olya")
+    # await create_user(session=session, username="alice")
+    # user_yaros = await get_user_by_username(session=session, username="yaros")
+    # user_max = await get_user_by_username(session=session, username="max")
+    # user_alice = await get_user_by_username(session=session, username="alice")
+    # await create_user_profile(
+    #     session=session,
+    #     user_id=user_alice.id,
+    #     first_name="Sam",
+    #     last_name="S",
+    # )
+    # await create_user_profile(
+    #     user_id=user_dan.id,
+    #     session=session,
+    #     first_name="Dan",
+    #     last_name="D",
+    # )
+    # await show_users_with_profiles(session=session)
+    # await create_posts(
+    #     session,
+    #     user_yaros.id,
+    #     "SQL 2.0",
+    #     "SQL Joins",
+    # )
+    #
+    # await create_posts(
+    #     session,
+    #     user_max.id,
+    #     "Fastapi Intro",
+    #     "Fastapi Advanced",
+    #     "Fastapi more",
+    # )
+    # await get_users_with_posts(session=session)
+    # await get_posts_with_authors(session=session)
+    # await get_users_with_posts_and_profile(session=session)
+    await get_profiles_with_users_and_user_with_posts(session=session)
+
+
+async def demo_m2m(session: AsyncSession):
+    pass
+
+
 async def main():
     async with db_helper.session_factory() as session:
-        # await create_user(session=session, username="olya")
-        # await create_user(session=session, username="alice")
-        # user_yaros = await get_user_by_username(session=session, username="yaros")
-        # user_max = await get_user_by_username(session=session, username="max")
-        # user_alice = await get_user_by_username(session=session, username="alice")
-        # await create_user_profile(
-        #     session=session,
-        #     user_id=user_alice.id,
-        #     first_name="Sam",
-        #     last_name="S",
-        # )
-        # await create_user_profile(
-        #     user_id=user_dan.id,
-        #     session=session,
-        #     first_name="Dan",
-        #     last_name="D",
-        # )
-        # await show_users_with_profiles(session=session)
-        # await create_posts(
-        #     session,
-        #     user_yaros.id,
-        #     "SQL 2.0",
-        #     "SQL Joins",
-        # )
-        #
-        # await create_posts(
-        #     session,
-        #     user_max.id,
-        #     "Fastapi Intro",
-        #     "Fastapi Advanced",
-        #     "Fastapi more",
-        # )
-        # await get_users_with_posts(session=session)
-        # await get_posts_with_authors(session=session)
-        # await get_users_with_posts_and_profile(session=session)
-        await get_profiles_with_users_and_user_with_posts(session=session)
+        # await main_relations(session=session)
+        await demo_m2m(session=session)
 
 
 if __name__ == "__main__":
