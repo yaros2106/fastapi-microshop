@@ -6,6 +6,7 @@ __all__ = (
     "UserModel",
     "PostModel",
     "ProfileModel",
+    "OrderModel",
 )
 
 from .base import Base
@@ -14,3 +15,4 @@ from .product import ProductModel
 from .user import UserModel
 from .post import PostModel
 from .profile import ProfileModel
+from .order import OrderModel
