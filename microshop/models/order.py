@@ -9,7 +9,6 @@ from sqlalchemy.orm import (
 )
 
 from .base import Base
-from .order_product_association import order_product_association_table
 
 if TYPE_CHECKING:
     from .product import ProductModel
@@ -26,6 +25,6 @@ class OrderModel(Base):
         ),  # lambda оборачивает вызов, чтобы SQLAlchemy мог сам вызывать её при вставке
     )
     products: Mapped[list["ProductModel"]] = relationship(
-        secondary=order_product_association_table,
+        secondary="order_product_association",
         back_populates="orders",
     )
