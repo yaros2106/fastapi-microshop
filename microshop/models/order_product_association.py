@@ -17,3 +17,4 @@ class OrderProductAssociation(Base):
 
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
+    quantity: Mapped[int] = mapped_column(default=1, server_default="1")
