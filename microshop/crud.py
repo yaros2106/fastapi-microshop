@@ -225,18 +225,7 @@ async def create_product(
     return product
 
 
-async def get_order_by_id(session: AsyncSession, order_id: int) -> OrderModel:
-    stmt = (
-        select(OrderModel)
-        .options(selectinload(OrderModel.products))
-        .where(OrderModel.id == order_id)
-    )
-    result: Result = await session.execute(stmt)
-    order = result.scalar()
-    return order
-
-
-async def demo_m2m(session: AsyncSession):
+async def create_orders_and_products(session: AsyncSession):
     order_one = await create_order(session=session)
     order_promo = await create_order(session=session, promocode="promo")
     mouse = await create_product(
@@ -257,20 +246,12 @@ async def demo_m2m(session: AsyncSession):
         description="Gaming display",
         price=299,
     )
-
-    order_one = await get_order_by_id(session=session, order_id=order_one.id)
-    order_promo = await get_order_by_id(session=session, order_id=order_promo.id)
-
-    # order_one = await session.scalar(
-    #     select(OrderModel)
-    #     .where(OrderModel.id == order_one.id)
-    #     .options(selectinload(OrderModel.products))
-    # )
-    # order_promo = await session.scalar(
-    #     select(OrderModel)
-    #     .where(OrderModel.id == order_promo.id)
-    #     .options(selectinload(OrderModel.products))
-    # )
+    order_one = await get_order_by_id_with_products(
+        session=session, order_id=order_one.id
+    )
+    order_promo = await get_order_by_id_with_products(
+        session=session, order_id=order_promo.id
+    )
 
     order_one.products.append(mouse)
     order_one.products.append(keyboard)
@@ -278,6 +259,39 @@ async def demo_m2m(session: AsyncSession):
     order_promo.products.append(display)
 
     await session.commit()
+
+
+async def get_orders_with_products(session: AsyncSession):
+    stmt = (
+        select(OrderModel)
+        .options(selectinload(OrderModel.products))
+        .order_by(OrderModel.id)
+    )
+    result: Result = await session.execute(stmt)
+    orders = result.scalars()
+    for order in orders:
+        print("****" * 10)
+        print("order_id:", order.id)
+        for product in order.products:  # type: ProductModel
+            print("- product:", product.name)
+
+
+async def get_order_by_id_with_products(
+    session: AsyncSession, order_id: int
+) -> OrderModel:
+    stmt = (
+        select(OrderModel)
+        .options(selectinload(OrderModel.products))
+        .where(OrderModel.id == order_id)
+    )
+    result: Result = await session.execute(stmt)
+    order = result.scalar()
+    return order
+
+
+async def demo_m2m(session: AsyncSession):
+    # await create_orders_and_products(session=session)
+    await get_orders_with_products(session=session)
 
 
 async def main():
