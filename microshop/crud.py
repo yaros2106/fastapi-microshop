@@ -13,6 +13,7 @@ from models import (
     PostModel,
     ProfileModel,
     OrderModel,
+    OrderProductAssociation,
 )
 
 
@@ -289,9 +290,47 @@ async def get_order_by_id_with_products(
     return order
 
 
+async def demo_get_orders_with_products_through_secondary(session: AsyncSession):
+    await get_orders_with_products(session=session)
+
+
+async def demo_get_orders_with_products_with_associations(session: AsyncSession):
+    await get_orders_with_products_assoc(session=session)
+
+
+async def get_orders_with_products_assoc(session: AsyncSession):
+    stmt = (
+        select(OrderModel)
+        .options(
+            selectinload(  # подгружаем связку
+                OrderModel.products_associations
+            ).joinedload(  # к каждой связке загружаем инфу о товаре
+                OrderProductAssociation.product
+            ),
+        )
+        .order_by(OrderModel.id)
+    )
+    orders = await session.scalars(stmt)
+    for order in orders:
+        print("****" * 10)
+        print("order_id:", order.id)
+        for (
+            order_product_details
+        ) in order.products_associations:  # type: OrderProductAssociation
+            print(
+                "- product:",
+                order_product_details.product.name,
+                "| price:",
+                order_product_details.product.price,
+                "| quantity:",
+                order_product_details.quantity,
+            )
+
+
 async def demo_m2m(session: AsyncSession):
     # await create_orders_and_products(session=session)
-    await get_orders_with_products(session=session)
+    # await demo_get_orders_with_products_through_secondary(session=session)
+    await demo_get_orders_with_products_with_associations(session=session)
 
 
 async def main():
