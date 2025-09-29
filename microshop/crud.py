@@ -295,22 +295,7 @@ async def demo_get_orders_with_products_through_secondary(session: AsyncSession)
 
 
 async def demo_get_orders_with_products_with_associations(session: AsyncSession):
-    await get_orders_with_products_assoc(session=session)
-
-
-async def get_orders_with_products_assoc(session: AsyncSession):
-    stmt = (
-        select(OrderModel)
-        .options(
-            selectinload(  # подгружаем связку
-                OrderModel.products_associations
-            ).joinedload(  # к каждой связке загружаем инфу о товаре
-                OrderProductAssociation.product
-            ),
-        )
-        .order_by(OrderModel.id)
-    )
-    orders = await session.scalars(stmt)
+    orders = await get_orders_with_products_assoc(session=session)
     for order in orders:
         print("****" * 10)
         print("order_id:", order.id)
@@ -327,10 +312,46 @@ async def get_orders_with_products_assoc(session: AsyncSession):
             )
 
 
+async def get_orders_with_products_assoc(session: AsyncSession):
+    stmt = (
+        select(OrderModel)
+        .options(
+            selectinload(  # подгружаем связку
+                OrderModel.products_associations
+            ).joinedload(  # к каждой связке загружаем инфу о товаре
+                OrderProductAssociation.product
+            ),
+        )
+        .order_by(OrderModel.id)
+    )
+    orders = await session.scalars(stmt)
+    return list(orders)
+
+
+async def create_gift_for_existing_products(session: AsyncSession):
+    orders = await get_orders_with_products_assoc(session=session)
+    gift_product = await create_product(
+        session=session,
+        name="Gift",
+        description="Gift for you",
+        price=0,
+    )
+    for order in orders:
+        order.products_associations.append(
+            OrderProductAssociation(
+                quantity=1,
+                unit_price=0,
+                product=gift_product,
+            )
+        )
+    await session.commit()
+
+
 async def demo_m2m(session: AsyncSession):
     # await create_orders_and_products(session=session)
     # await demo_get_orders_with_products_through_secondary(session=session)
     await demo_get_orders_with_products_with_associations(session=session)
+    # await create_gift_for_existing_products(session=session)
 
 
 async def main():
