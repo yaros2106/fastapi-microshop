@@ -12,6 +12,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .product import ProductModel
+    from .order_product_association import OrderProductAssociation
 
 
 class OrderModel(Base):
@@ -24,7 +25,13 @@ class OrderModel(Base):
             UTC
         ),  # lambda оборачивает вызов, чтобы SQLAlchemy мог сам вызывать её при вставке
     )
-    products: Mapped[list["ProductModel"]] = relationship(
-        secondary="order_product_association",
-        back_populates="orders",
+
+    # products: Mapped[list["ProductModel"]] = relationship(
+    #     secondary="order_product_association",
+    #     back_populates="orders",
+    # )
+
+    # association between OrderModel -> Association -> ProductModel
+    products_associations: Mapped[list["OrderProductAssociation"]] = relationship(
+        back_populates="order",
     )

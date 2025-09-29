@@ -1,10 +1,21 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import (
     ForeignKey,
     UniqueConstraint,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
 
 from models import Base
+
+
+if TYPE_CHECKING:
+    from .order import OrderModel
+    from .product import ProductModel
 
 
 class OrderProductAssociation(Base):
@@ -18,3 +29,12 @@ class OrderProductAssociation(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
     quantity: Mapped[int] = mapped_column(default=1, server_default="1")
+
+    # association between Assocation -> OrderModel
+    order: Mapped["OrderModel"] = relationship(
+        back_populates="products_associations",
+    )
+    # association between Assocation -> ProductModel
+    product: Mapped["ProductModel"] = relationship(
+        back_populates="orders_associations",
+    )

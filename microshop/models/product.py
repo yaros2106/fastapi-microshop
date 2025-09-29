@@ -7,6 +7,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .order import OrderModel
+    from .order_product_association import OrderProductAssociation
 
 
 class ProductModel(Base):
@@ -16,7 +17,12 @@ class ProductModel(Base):
     description: Mapped[str]
     price: Mapped[int]
 
-    orders: Mapped[list["OrderModel"]] = relationship(
-        secondary="order_product_association",
-        back_populates="products",
+    # orders: Mapped[list["OrderModel"]] = relationship(
+    #     secondary="order_product_association",
+    #     back_populates="products",
+    # )
+
+    # association between ProductModel -> Association -> OrderModel
+    orders_associations: Mapped[list["OrderProductAssociation"]] = relationship(
+        back_populates="product",
     )
