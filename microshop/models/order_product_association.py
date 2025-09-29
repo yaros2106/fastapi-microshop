@@ -29,6 +29,7 @@ class OrderProductAssociation(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
     quantity: Mapped[int] = mapped_column(default=1, server_default="1")
+    unit_price: Mapped[int] = mapped_column(default=0, server_default="0")
 
     # association between Assocation -> OrderModel
     order: Mapped["OrderModel"] = relationship(
