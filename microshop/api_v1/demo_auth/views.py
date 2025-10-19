@@ -1,5 +1,7 @@
 import secrets
-from typing import Annotated
+from time import time
+import uuid
+from typing import Annotated, Any
 
 from fastapi import (
     APIRouter,
@@ -7,6 +9,8 @@ from fastapi import (
     HTTPException,
     status,
     Header,
+    Response,
+    Cookie,
 )
 from fastapi.security import (
     HTTPBasicCredentials,
@@ -99,4 +103,65 @@ def demo_auth_some_http_header(
 ):
     return {
         "message": f"Hi, {username}!",
+    }
+
+
+COOKIES: dict[str, dict[str, Any]] = {}
+COOKIE_SESSION_ID_KEY = "web-cookie-session-id"
+
+
+def generate_session_id() -> str:
+    return uuid.uuid4().hex
+
+
+@router.post("/login-cookie/")
+def demo_auth_login_set_cookie(
+    response: Response,
+    # auth_username: str = Depends(get_auth_user_username),
+    username: str = Depends(get_username_by_static_auth_token),
+):
+    session_id = generate_session_id()
+    COOKIES[session_id] = {
+        "username": username,
+        "login_at": int(time()),
+    }
+    response.set_cookie(COOKIE_SESSION_ID_KEY, session_id)
+    return {
+        "result": "ok!",
+    }
+
+
+def get_session_data(
+    session_id: str = Cookie(alias=COOKIE_SESSION_ID_KEY),
+) -> dict[str, Any]:
+    if session_id not in COOKIES:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="not authenticated",
+        )
+    return COOKIES[session_id]
+
+
+@router.get("/check-cookie/")
+def demo_auth_check_cookie(
+    user_session_data: dict[str, Any] = Depends(get_session_data),
+):
+    username = user_session_data["username"]
+    return {
+        "message": f"hello, {username}",
+        **user_session_data,
+    }
+
+
+@router.get("/logout-cookie/")
+def demo_auth_logout_cookie(
+    response: Response,
+    session_id: str = Cookie(alias=COOKIE_SESSION_ID_KEY),
+    user_session_data: dict[str, Any] = Depends(get_session_data),
+):
+    COOKIES.pop(session_id)
+    response.delete_cookie(COOKIE_SESSION_ID_KEY)
+    username = user_session_data["username"]
+    return {
+        "message": f"Bye, {username}",
     }
