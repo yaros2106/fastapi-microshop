@@ -8,12 +8,14 @@ from fastapi import (
 from pydantic import BaseModel
 
 from fastapi.security import (
-    HTTPBearer,
-    HTTPAuthorizationCredentials,
     OAuth2PasswordBearer,
 )
 from jwt.exceptions import InvalidTokenError
 
+from api_v1.demo_auth.helpers import (
+    create_access_token,
+    create_refresh_token,
+)
 from schemas.user_schema import UserSchema
 from auth import utils_jwt
 
@@ -30,7 +32,8 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 class TokenInfo(BaseModel):
     access_token: str
-    token_type: str
+    refresh_token: str
+    token_type: str = "Bearer"
 
 
 router = APIRouter(
@@ -86,16 +89,11 @@ def validate_auth_user(
 def auth_user_issue_jwt(
     user: UserSchema = Depends(validate_auth_user),
 ):
-    jwt_payload = {
-        # subject
-        "sub": user.username,  # в sub лучше всего класть, например id, если он есть
-        "username": user.username,
-        "email": user.email,
-    }
-    token = utils_jwt.encode_jwt(jwt_payload)
+    access_token = create_access_token(user=user)
+    refresh_token = create_refresh_token(user=user)
     return TokenInfo(
-        access_token=token,
-        token_type="Bearer",
+        access_token=access_token,
+        refresh_token=refresh_token,
     )
 
 
