@@ -29,7 +29,7 @@ http_bearer = HTTPBearer(
 
 class TokenInfo(BaseModel):
     access_token: str
-    refresh_token: str
+    refresh_token: str | None = None
     token_type: str = "Bearer"
 
 
@@ -66,3 +66,15 @@ def auth_user_check_self_info(
         "email": user.email,
         "logged_in_at": iat,
     }
+
+
+@router.post(
+    "/refresh/",
+    response_model=TokenInfo,
+    response_model_exclude_none=True,
+)
+def auth_user_refresh_jwt(
+    user: UserSchema = Depends(get_current_auth_user_for_refresh),
+):
+    access_token = create_access_token(user=user)
+    return TokenInfo(access_token=access_token)
